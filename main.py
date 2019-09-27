@@ -10,6 +10,14 @@ paddle_1.shapesize(stretch_wid=1, stretch_len=5)
 paddle_1.penup()
 paddle_1.goto(0, -250)
 
+# desenhar bola
+ball = turtle.Turtle()
+ball.speed(0)
+ball.shape("square")
+ball.color("white")
+ball.penup()
+ball.goto(0, -25)
+
 playing = True
 
 
