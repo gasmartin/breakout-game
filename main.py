@@ -1,9 +1,22 @@
 import turtle
 
+
+# desenhar raquete
+paddle_1 = turtle.Turtle()
+paddle_1.speed(0)
+paddle_1.shape("square")
+paddle_1.color("white")
+paddle_1.shapesize(stretch_wid=1, stretch_len=5)
+paddle_1.penup()
+paddle_1.goto(0, -250)
+
 playing = True
+
+
 def close_screen():
     global playing
     playing = not playing
+
 
 def create_screen(title, width, height):
     screen = turtle.Screen()
