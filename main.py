@@ -1,6 +1,9 @@
 import turtle
+import time
+from random import choice
 
 playing = True
+colors = ["red", "yellow", "orange"]
 
 def create_screen(title, width, height):
     screen = turtle.Screen()
@@ -44,14 +47,27 @@ def create_brick(x, y, width, length, color):
     brick.visible = True
     return brick
 
+def collision(paddle, ball):
+    px, py = paddle.xcor(), paddle.ycor()
+    bx, by = ball.xcor(), ball.ycor()
+    if bx > px - 50 and bx < px + 50 and by - 10 <= py + 8 and by - 10 >= py:
+        print("Colidiu")
+
 screen = create_screen("Breakout", 800, 600)
 root = screen.getcanvas().winfo_toplevel()
 root.protocol("WM_DELETE_WINDOW", close_screen)
 
-paddle = create_paddle(0, -250, 1, 5, "white")
+paddle = create_paddle(0, -250, 0.8, 5, "white")
 ball = create_ball(0, -25, "white")
 
-brick = create_brick(-325, 275, 1, 5, "blue")
+bricks = []
+x = -270
+while x <= 270:
+    y = 230
+    while y >= 140:
+        bricks.append(create_brick(x, y, 1, 4, choice(colors)))
+        y -= 30
+    x += 90
 
 while playing:
     screen.update()
