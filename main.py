@@ -3,7 +3,7 @@ from random import choice
 import turtle
 
 playing = True
-colors = ["red", "yellow", "orange"]
+colors = ["red", "yellow", "orange", "green", "teal", "violet"]
 
 def create_screen(title, width, height):
     screen = turtle.Screen()
@@ -72,13 +72,14 @@ ball.dx = 0.7
 ball.dy = 0.7
 
 bricks = []
-x = -270
-while x <= 270:
-    y = 230
-    while y >= 140:
-        bricks.append(create_brick(x, y, 1, 4, choice(colors)))
-        y -= 30
-    x += 90
+y = 230 
+while y >= 140:
+    x = -270
+    line_color = choice(colors)
+    while x <= 270:
+        bricks.append(create_brick(x, y, 1, 4, line_color))
+        x += 90
+    y -= 30
 
 while playing:
     screen.update()
