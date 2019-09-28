@@ -5,6 +5,7 @@ import turtle
 playing = True
 colors = ["red", "yellow", "orange", "green", "teal", "violet"]
 
+
 def create_screen(title, width, height):
     screen = turtle.Screen()
     screen.title(title)
@@ -13,9 +14,11 @@ def create_screen(title, width, height):
     screen.tracer(0)
     return screen
 
+
 def close_screen():
     global playing
     playing = not playing
+
 
 def create_paddle(x, y, width, length, color):
     paddle = turtle.Turtle()
@@ -27,6 +30,7 @@ def create_paddle(x, y, width, length, color):
     paddle.goto(x, y)
     return paddle
 
+
 def create_ball(x, y, color):
     ball = turtle.Turtle()
     ball.speed(0)
@@ -35,6 +39,7 @@ def create_ball(x, y, color):
     ball.penup()
     ball.goto(x, y)
     return ball
+
 
 def create_brick(x, y, width, length, color):
     brick = turtle.Turtle()
@@ -46,6 +51,7 @@ def create_brick(x, y, width, length, color):
     brick.goto(x, y)
     return brick
 
+
 # Lógica do ângulo
 # px - bx + 90
 def calculate_angle(ball, degrees):
@@ -53,6 +59,7 @@ def calculate_angle(ball, degrees):
     dy = ball.speed * sin(radians(degrees))
     ball.dx = round(dx, 2)
     ball.dy = round(dy, 2)
+
 
 def collision(paddle, ball):
     px, py = paddle.xcor(), paddle.ycor()
@@ -67,12 +74,12 @@ root.protocol("WM_DELETE_WINDOW", close_screen)
 paddle = create_paddle(0, -250, 0.8, 5, "white")
 ball = create_ball(0, -150, "white")
 
-#definindo a velocidade inicial da bola
+# definindo a velocidade inicial da bola
 ball.dx = 0.7
 ball.dy = 0.7
 
 bricks = []
-y = 230 
+y = 230
 while y >= 140:
     x = -270
     line_color = choice(colors)
@@ -87,3 +94,8 @@ while playing:
     # movimentação da bola
     ball.setx(ball.xcor() + ball.dx)
     ball.sety(ball.ycor() + ball.dy)
+
+    # colisão com parede da direita
+    if ball.xcor() > 385:
+        ball.setx(385)
+        ball.dx *= -1
