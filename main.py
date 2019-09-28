@@ -1,6 +1,6 @@
-import turtle
-import time
+from math import cos, radians, sin
 from random import choice
+import turtle
 
 playing = True
 colors = ["red", "yellow", "orange"]
@@ -44,8 +44,15 @@ def create_brick(x, y, width, length, color):
     brick.color(color)
     brick.penup()
     brick.goto(x, y)
-    brick.visible = True
     return brick
+
+# Lógica do ângulo
+# px - bx + 90
+def calculate_angle(ball, degrees):
+    dx = ball.speed * cos(radians(degrees))
+    dy = ball.speed * sin(radians(degrees))
+    ball.dx = round(dx, 2)
+    ball.dy = round(dy, 2)
 
 def collision(paddle, ball):
     px, py = paddle.xcor(), paddle.ycor()
