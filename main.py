@@ -58,7 +58,11 @@ root = screen.getcanvas().winfo_toplevel()
 root.protocol("WM_DELETE_WINDOW", close_screen)
 
 paddle = create_paddle(0, -250, 0.8, 5, "white")
-ball = create_ball(0, -25, "white")
+ball = create_ball(0, -150, "white")
+
+#definindo a velocidade inicial da bola
+ball.dx = 0.7
+ball.dy = 0.7
 
 bricks = []
 x = -270
@@ -71,3 +75,7 @@ while x <= 270:
 
 while playing:
     screen.update()
+
+    # movimentação da bola
+    ball.setx(ball.xcor() + ball.dx)
+    ball.sety(ball.ycor() + ball.dy)
