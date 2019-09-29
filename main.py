@@ -1,5 +1,5 @@
 from math import cos, radians, sin
-from random import choice
+from random import choice, randint
 import turtle
 
 playing = True
@@ -72,11 +72,20 @@ root = screen.getcanvas().winfo_toplevel()
 root.protocol("WM_DELETE_WINDOW", close_screen)
 
 paddle = create_paddle(0, -250, 0.8, 5, "white")
-ball = create_ball(0, -150, "white")
 
-# definindo a velocidade inicial da bola
-ball.dx = 0.7
-ball.dy = 0.7
+# posição inicial da bola
+ball_initial_position_x = 0
+ball_initial_position_y = 0
+ball = create_ball(ball_initial_position_x, ball_initial_position_y, "white")
+
+# definindo a velocidade inicial da bola e
+# um pouco de aleatoriedade no início do jogo
+if randint(0, 1) == 0:
+    ball.dx = 0.7
+else:
+    ball.dx = -0.7
+# o jogo inicia com a bola indo pra baixo
+ball.dy = -0.7
 
 bricks = []
 y = 230
@@ -109,3 +118,11 @@ while playing:
     if ball.ycor() > 288:
         ball.sety(288)
         ball.dy *= -1
+
+    # reinício do jogo
+    # resetar a bola
+    if ball.ycor() < -450:
+        ball.goto(paddle.xcor(), ball_initial_position_y)
+        # um pouco de aleatoriedade no reinício do jogo
+        if randint(0, 1) == 0:
+            ball.dx *= -1
