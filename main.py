@@ -71,11 +71,10 @@ def collision(paddle, ball):
     px, py = paddle.xcor(), paddle.ycor()
     bx, by = ball.xcor(), ball.ycor()
     if bx > px - 60 and bx < px + 60 and by - 10 <= py + 8 and by - 10 >= py:
-        # degrees = px - bx + 90
-        # calculate_angle(ball, degrees)
-        ball.dy *= -1
+        degrees = px - bx + 90
+        calculate_angle(ball, degrees)
     if by < py + 8 and by > py - 8:
-        if bx <= px + 60 or bx >= px - 60:
+        if (bx >= px - 60 and bx < px) or (bx <= px + 60 and bx > px):
             ball.dx *= -1
             ball.dy *= -1
 
