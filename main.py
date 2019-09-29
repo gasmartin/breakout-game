@@ -104,3 +104,8 @@ while playing:
     if ball.xcor() < -388:
         ball.setx(-388)
         ball.dx *= -1
+
+    # colisão com parede superior
+    if ball.ycor() > 288:
+        ball.sety(288)
+        ball.dy *= -1
