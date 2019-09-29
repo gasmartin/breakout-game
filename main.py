@@ -70,8 +70,14 @@ def calculate_angle(ball, degrees):
 def collision(paddle, ball):
     px, py = paddle.xcor(), paddle.ycor()
     bx, by = ball.xcor(), ball.ycor()
-    if bx > px - 50 and bx < px + 50 and by - 10 <= py + 8 and by - 10 >= py:
-        print("Colidiu")
+    if bx > px - 60 and bx < px + 60 and by - 10 <= py + 8 and by - 10 >= py:
+        # degrees = px - bx + 90
+        # calculate_angle(ball, degrees)
+        ball.dy *= -1
+    if by < py + 8 and by > py - 8:
+        if bx <= px + 60 or bx >= px - 60:
+            ball.dx *= -1
+            ball.dy *= -1
 
 
 def paddle_left():   # movimentação da raquete para o lado esquerdo
@@ -95,7 +101,7 @@ screen = create_screen("Breakout", 800, 1000)
 root = screen.getcanvas().winfo_toplevel()
 root.protocol("WM_DELETE_WINDOW", close_screen)
 
-paddle = create_paddle(0, -400, 0.8, 5, "white")
+paddle = create_paddle(0, -400, 0.8, 6, "white")
 
 # posição inicial da bola
 ball_initial_position_x = 0
@@ -112,6 +118,7 @@ else:
 # o jogo inicia com a bola indo pra baixo
 ball.dy = -0.7
 
+# desenhando os blocos
 y = 380
 for color in colors:
     create_line_of_bricks(y, color)
@@ -125,11 +132,11 @@ screen.onkeypress(paddle_right, "Right")
 screen.onkeypress(paddle_left, "Left")
 
 while playing:
-    screen.update()
-
     # movimentação da bola
     ball.setx(ball.xcor() + ball.dx)
     ball.sety(ball.ycor() + ball.dy)
+
+    collision(paddle, ball)
 
     # colisão com parede da direita
     if ball.xcor() > 385:
@@ -151,3 +158,5 @@ while playing:
         # um pouco de aleatoriedade no reinício do jogo
         if randint(0, 1) == 0:
             ball.dx *= -1
+
+    screen.update()
