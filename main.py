@@ -3,9 +3,12 @@ from random import choice, randint
 import turtle
 
 base_speed = 0.7
+ball_initial_position_x = 0
+ball_initial_position_y = 80
 playing = True
 bricks = []
 colors = ["red", "orange", "green", "yellow"]
+
 
 def create_screen(title, width, height):
     screen = turtle.Screen()
@@ -51,6 +54,7 @@ def create_brick(x, y, width, length, color):
     brick.penup()
     brick.goto(x, y)
     return brick
+
 
 def create_line_of_bricks(initial_y, color):
     x = -270
@@ -109,20 +113,17 @@ for color in colors:
 
 paddle = create_paddle(0, -250, 0.8, 6, "white")
 
-# posição inicial da bola
-ball_initial_position_x = 0
-ball_initial_position_y = 0
 ball = create_ball(ball_initial_position_x, ball_initial_position_y, "white")
 
 # definindo a velocidade inicial da bola e
 # um pouco de aleatoriedade no início do jogo
 if randint(0, 1) == 0:
-    ball.dx = 0.7
+    ball.dx = base_speed
 else:
-    ball.dx = -0.7
+    ball.dx = -base_speed
 
 # o jogo inicia com a bola indo pra baixo
-ball.dy = -0.7
+ball.dy = -base_speed
 
 # movimentação da raquete
 screen.listen()
