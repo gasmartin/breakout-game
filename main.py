@@ -2,6 +2,7 @@ from math import cos, radians, sin
 from random import choice, randint
 import turtle
 
+base_speed = 0.7
 playing = True
 bricks = []
 colors = ["red", "orange", "green", "yellow"]
@@ -33,7 +34,7 @@ def create_paddle(x, y, width, length, color):
 
 def create_ball(x, y, color):
     ball = turtle.Turtle()
-    ball.speed(0)
+    # ball.base_speed(0)
     ball.shape("square")
     ball.color(color)
     ball.penup()
@@ -61,8 +62,8 @@ def create_line_of_bricks(initial_y, color):
 # Lógica do ângulo
 # px - bx + 90
 def calculate_angle(ball, degrees):
-    dx = ball.speed * cos(radians(degrees))
-    dy = ball.speed * sin(radians(degrees))
+    dx = base_speed * cos(radians(degrees))
+    dy = base_speed * sin(radians(degrees))
     ball.dx = round(dx, 2)
     ball.dy = round(dy, 2)
 
@@ -96,11 +97,11 @@ def paddle_right():  # movimentação da raquete para o lado direito
         x = 350
     paddle.setx(x)
 
-screen = create_screen("Breakout", 800, 1000)
+screen = create_screen("Breakout", 800, 600)
 root = screen.getcanvas().winfo_toplevel()
 root.protocol("WM_DELETE_WINDOW", close_screen)
 
-paddle = create_paddle(0, -400, 0.8, 6, "white")
+paddle = create_paddle(0, -250, 0.8, 6, "white")
 
 # posição inicial da bola
 ball_initial_position_x = 0
@@ -118,7 +119,7 @@ else:
 ball.dy = -0.7
 
 # desenhando os blocos
-y = 380
+y = 230
 for color in colors:
     create_line_of_bricks(y, color)
     y -= 30
@@ -148,11 +149,11 @@ while playing:
         ball.dx *= -1
 
     # colisão com parede superior
-    if ball.ycor() + 10 > 500:
+    if ball.ycor() > 288:
         ball.dy *= -1
 
     # reinício do jogo - resetar a bola
-    if ball.ycor() < -500:
+    if ball.ycor() < -450:
         ball.goto(paddle.xcor(), ball_initial_position_y)
         # um pouco de aleatoriedade no reinício do jogo
         if randint(0, 1) == 0:
