@@ -101,6 +101,12 @@ screen = create_screen("Breakout", 800, 600)
 root = screen.getcanvas().winfo_toplevel()
 root.protocol("WM_DELETE_WINDOW", close_screen)
 
+# desenhando os blocos
+y = 200
+for color in colors:
+    create_line_of_bricks(y, color)
+    y -= 30
+
 paddle = create_paddle(0, -250, 0.8, 6, "white")
 
 # posição inicial da bola
@@ -117,14 +123,6 @@ else:
 
 # o jogo inicia com a bola indo pra baixo
 ball.dy = -0.7
-
-# desenhando os blocos
-y = 230
-for color in colors:
-    create_line_of_bricks(y, color)
-    y -= 30
-    create_line_of_bricks(y, color)
-    y -= 30
 
 # movimentação da raquete
 screen.listen()
