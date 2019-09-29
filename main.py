@@ -67,6 +67,24 @@ def collision(paddle, ball):
     if bx > px - 50 and bx < px + 50 and by - 10 <= py + 8 and by - 10 >= py:
         print("Colidiu")
 
+
+def paddle_left():   # movimentação da raquete para o lado esquerdo
+    x = paddle.xcor()
+    if x > -350:
+        x += -20
+    else:
+        x = -350
+    paddle.setx(x)
+
+
+def paddle_right():  # movimentação da raquete para o lado direito
+    x = paddle.xcor()
+    if x < 350:
+        x += 20
+    else:
+        x = 350
+    paddle.setx(x)
+
 screen = create_screen("Breakout", 800, 600)
 root = screen.getcanvas().winfo_toplevel()
 root.protocol("WM_DELETE_WINDOW", close_screen)
@@ -84,9 +102,11 @@ if randint(0, 1) == 0:
     ball.dx = 0.7
 else:
     ball.dx = -0.7
+
 # o jogo inicia com a bola indo pra baixo
 ball.dy = -0.7
 
+# criando tijolos
 bricks = []
 y = 230
 while y >= 140:
@@ -96,6 +116,11 @@ while y >= 140:
         bricks.append(create_brick(x, y, 1, 4, line_color))
         x += 90
     y -= 30
+
+# movimentação da raquete
+screen.listen()
+screen.onkeypress(paddle_right, "Right")
+screen.onkeypress(paddle_left, "Left")
 
 while playing:
     screen.update()
@@ -119,8 +144,7 @@ while playing:
         ball.sety(288)
         ball.dy *= -1
 
-    # reinício do jogo
-    # resetar a bola
+    # reinício do jogo - resetar a bola
     if ball.ycor() < -450:
         ball.goto(paddle.xcor(), ball_initial_position_y)
         # um pouco de aleatoriedade no reinício do jogo
