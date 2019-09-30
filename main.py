@@ -9,6 +9,7 @@ ball_initial_position_y = 80
 playing = True
 bricks = []
 colors = ["red", "orange", "green", "yellow"]
+lives = 3
 
 
 def create_screen(title, width, height):
@@ -133,6 +134,10 @@ screen.onkeypress(paddle_right, "Right")
 screen.onkeypress(paddle_left, "Left")
 
 while playing:
+    # condição de parada do jogo
+    if(lives ==0):
+        playing = False
+        continue
     # movimentação da bola
     ball.setx(ball.xcor() + ball.dx)
     ball.sety(ball.ycor() + ball.dy)
@@ -158,6 +163,7 @@ while playing:
 
     # reinício do jogo - resetar a bola
     if ball.ycor() < -450:
+        lives -= 1
         os.system("aplay arcade-bleep-sound.wav&")
         ball.goto(paddle.xcor(), ball_initial_position_y)
         # um pouco de aleatoriedade no reinício do jogo
