@@ -13,7 +13,7 @@ lives = 3
 
 
 # desenhando display score e vidas
-def create_hud(x,y):
+def create_hud(x, y):
 
     hud = turtle.Turtle()
     hud.speed(0)
@@ -22,7 +22,9 @@ def create_hud(x,y):
     hud.penup()
     hud.hideturtle()
     hud.goto(x, y)
-    return hud 
+    return hud
+
+
 def create_screen(title, width, height):
     screen = turtle.Screen()
     screen.title(title)
@@ -109,10 +111,10 @@ def paddle_left():   # movimentação da raquete para o lado esquerdo
 
 def paddle_right():  # movimentação da raquete para o lado direito
     x = paddle.xcor()
-    if x < 350:
+    if x < 340:
         x += 20
     else:
-        x = 350
+        x = 340
     paddle.setx(x)
 
 screen = create_screen("Breakout", 800, 600)
@@ -149,7 +151,7 @@ screen.onkeypress(paddle_left, "Left")
 
 while playing:
     # condição de parada do jogo
-    if(lives ==0):
+    if(lives == 0):
         playing = False
         continue
     # movimentação da bola
@@ -178,13 +180,12 @@ while playing:
     # reinício do jogo - resetar a bola
     if ball.ycor() < -450:
         lives -= 1
-        os.system("aplay arcade-bleep-sound.wav&")
         ball.goto(paddle.xcor(), ball_initial_position_y)
         # um pouco de aleatoriedade no reinício do jogo
         if randint(0, 1) == 0:
             ball.dx *= -1
     lives_hud.clear()
-    lives_hud.write ("LIVES")
+    lives_hud.write("LIVES")
     score_hud.write("SCORE")
 
     screen.update()
