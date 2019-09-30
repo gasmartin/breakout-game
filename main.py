@@ -1,6 +1,7 @@
 from math import cos, radians, sin
 from random import choice, randint
 import turtle
+import os
 
 base_speed = 0.7
 ball_initial_position_x = 0
@@ -76,6 +77,7 @@ def collision(paddle, ball):
     px, py = paddle.xcor(), paddle.ycor()
     bx, by = ball.xcor(), ball.ycor()
     if bx > px - 60 and bx < px + 60 and by - 10 <= py + 8 and by - 10 >= py:
+        os.system("aplay bounce.wav&")
         degrees = px - bx + 90
         calculate_angle(ball, degrees)
     if by < py + 8 and by > py - 8:
@@ -139,20 +141,24 @@ while playing:
 
     # colisão com parede da direita
     if ball.xcor() > 385:
+        os.system("aplay bounce.wav&")
         ball.setx(385)
         ball.dx *= -1
 
     # colisão com parede da esquerda
     if ball.xcor() < -388:
+        os.system("aplay bounce.wav&")
         ball.setx(-388)
         ball.dx *= -1
 
     # colisão com parede superior
     if ball.ycor() > 288:
+        os.system("aplay bounce.wav&")
         ball.dy *= -1
 
     # reinício do jogo - resetar a bola
     if ball.ycor() < -450:
+        os.system("aplay arcade-bleep-sound.wav&")
         ball.goto(paddle.xcor(), ball_initial_position_y)
         # um pouco de aleatoriedade no reinício do jogo
         if randint(0, 1) == 0:
