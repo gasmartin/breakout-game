@@ -12,6 +12,17 @@ colors = ["red", "orange", "green", "yellow"]
 lives = 3
 
 
+# desenhando display score e vidas
+def create_hud(x,y):
+
+    hud = turtle.Turtle()
+    hud.speed(0)
+    hud.shape("square")
+    hud.color("white")
+    hud.penup()
+    hud.hideturtle()
+    hud.goto(x, y)
+    return hud 
 def create_screen(title, width, height):
     screen = turtle.Screen()
     screen.title(title)
@@ -118,6 +129,9 @@ paddle = create_paddle(0, -250, 0.8, 6, "white")
 
 ball = create_ball(ball_initial_position_x, ball_initial_position_y, "white")
 
+
+lives_hud = create_hud(250, 250)
+score_hud = create_hud(-280, 250)
 # definindo a velocidade inicial da bola e
 # um pouco de aleatoriedade no início do jogo
 if randint(0, 1) == 0:
@@ -169,5 +183,8 @@ while playing:
         # um pouco de aleatoriedade no reinício do jogo
         if randint(0, 1) == 0:
             ball.dx *= -1
+    lives_hud.clear()
+    lives_hud.write ("LIVES")
+    score_hud.write("SCORE")
 
     screen.update()
