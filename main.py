@@ -15,7 +15,7 @@ colors = {"red": 7, "orange": 5, "green": 3, "yellow": 1}
 
 lifes = 3
 score = 0
-
+inv_bricks = 0
 
 def create_screen(title, width, height):
     screen = turtle.Screen()
@@ -104,6 +104,7 @@ def collision(paddle, ball):
 
 def collision_brick(brick, ball):
     global score
+    global inv_bricks
     brx, bry = brick.xcor(), brick.ycor()
     bx, by = ball.xcor(), ball.ycor()
     if brick.isvisible():
@@ -115,6 +116,8 @@ def collision_brick(brick, ball):
                 score += colors[brick.color()[0]]
                 update_hud()
                 brick.hideturtle()
+                inv_bricks += 1
+                return
         if by < bry + 10 and by > bry - 10:
             if (bx >= brx - 40 and bx < brx) or (bx <= brx + 40 and bx > brx):
                 ball.dx *= -1
@@ -122,6 +125,8 @@ def collision_brick(brick, ball):
                 score += colors[brick.color()[0]]
                 update_hud()
                 brick.hideturtle()
+                inv_bricks += 1
+                return
 
 
 def paddle_left():   # movimentação da raquete para o lado esquerdo
@@ -188,7 +193,7 @@ screen.onkeypress(throw_ball, "space")
 
 
 # mensagem de game over
-def game_over_screen():
+def end_game_screen(string):
     hud = turtle.Turtle()
     hud.speed(0)
     hud.shape("square")
@@ -196,7 +201,7 @@ def game_over_screen():
     hud.penup()
     hud.hideturtle()
     hud.goto(0, 0)
-    hud.write("GAME OVER :(", align="center",
+    hud.write(string, align="center",
               font=("Press Start 2P", 24, "normal"))
 
 
@@ -219,7 +224,14 @@ while playing:
     # condição de parada do jogo
     if lifes == 0:
         update_hud()
-        game_over_screen()
+        end_game_screen("GAME OVER :(")
+        sleep(5)
+        playing = False
+        continue
+
+    if inv_bricks == 28:
+        update_hud()
+        end_game_screen("YOU WIN :)")
         sleep(5)
         playing = False
         continue
