@@ -127,23 +127,23 @@ def collision_brick(brick, ball):
 def paddle_left():   # movimentação da raquete para o lado esquerdo
     x = paddle.xcor()
     if x > -350:
-        x += -20
+        x += -40
     else:
         x = -350
     paddle.setx(x)
     if is_rolling:
-        ball.setx(ball.xcor() - 20)
+        ball.setx(ball.xcor() - 40)
 
 
 def paddle_right():  # movimentação da raquete para o lado direito
     x = paddle.xcor()
     if x < 340:
-        x += 20
+        x += 40
     else:
         x = 340
     paddle.setx(x)
     if is_rolling:
-        ball.setx(ball.xcor() + 20)
+        ball.setx(ball.xcor() + 40)
 
 def throw_ball():
     global is_rolling
