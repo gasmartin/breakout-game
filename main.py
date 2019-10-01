@@ -68,6 +68,7 @@ def create_line_of_bricks(initial_y, color):
         bricks.append(create_brick(x, initial_y, 1, 4, color))
         x += 90
 
+
 def create_hud(x, y):
     hud = turtle.Turtle()
     hud.speed(0)
@@ -89,7 +90,8 @@ def calculate_angle(ball, degrees):
 def collision(paddle, ball):
     brx, bry = paddle.xcor(), paddle.ycor()
     bx, by = ball.xcor(), ball.ycor()
-    if bx > brx - 60 and bx < brx + 60 and by - 10 <= bry + 8 and by - 10 >= bry:
+    if (bx > brx - 60 and bx < brx + 60 and
+            by - 10 <= bry + 8 and by - 10 >= bry):
         os.system("aplay bounce.wav&")
         degrees = brx - bx + 90
         calculate_angle(ball, degrees)
@@ -99,13 +101,15 @@ def collision(paddle, ball):
             ball.dx *= -1
             ball.dy *= -1
 
+
 def collision_brick(brick, ball):
     global score
     brx, bry = brick.xcor(), brick.ycor()
     bx, by = ball.xcor(), ball.ycor()
     if brick.isvisible():
         if bx > brx - 40 and bx < brx + 40:
-            if (by - 10 <= bry + 10 and by > bry) or (by + 10 >= bry - 10 and by < bry):
+            if ((by - 10 <= bry + 10 and by > bry) or
+                    (by + 10 >= bry - 10 and by < bry)):
                 os.system("aplay bounce.wav&")
                 ball.dy *= -1
                 score += colors[brick.color()[0]]
@@ -118,6 +122,7 @@ def collision_brick(brick, ball):
                 score += colors[brick.color()[0]]
                 update_hud()
                 brick.hideturtle()
+
 
 def paddle_left():   # movimentação da raquete para o lado esquerdo
     x = paddle.xcor()
@@ -148,6 +153,7 @@ def throw_ball():
         degrees = px - bx + 90
         calculate_angle(ball, degrees)
         is_rolling = False
+
 
 screen = create_screen("Breakout", 800, 600)
 root = screen.getcanvas().winfo_toplevel()
@@ -191,16 +197,19 @@ def game_over_screen():
     hud.write("GAME OVER :(", align="center",
               font=("Press Start 2P", 24, "normal"))
 
+
 score_hud = create_hud(-300, 250)
 lifes_hud = create_hud(300, 250)
+
 
 def update_hud():
     score_hud.clear()
     score_hud.write("SCORE {}".format(score), align="center",
-            font=("Press Start 2P", 18, "normal"))
+                    font=("Press Start 2P", 18, "normal"))
     lifes_hud.clear()
     lifes_hud.write("<3" * lifes, align="center",
-            font=("Press Start 2P", 18, "normal"))
+                    font=("Press Start 2P", 18, "normal"))
+
 
 update_hud()
 while playing:
