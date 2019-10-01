@@ -187,6 +187,7 @@ def update_hud():
     lifes_hud.write("<3" * lifes, align="center",
             font=("Press Start 2P", 18, "normal"))
 
+update_hud()
 while playing:
     # condição de parada do jogo
     if lifes == 0:
