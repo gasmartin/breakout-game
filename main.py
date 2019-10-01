@@ -260,6 +260,8 @@ while playing:
         lifes -= 1
         update_hud()
         ball.goto(paddle.xcor(), ball_initial_position_y)
+        ball.dx = base_speed
+        ball.dy = 0
         is_rolling = True
         # um pouco de aleatoriedade no reinício do jogo
         if randint(0, 1) == 0:
