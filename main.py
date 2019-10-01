@@ -6,9 +6,10 @@ import os
 
 base_speed = 0.6
 ball_initial_position_x = 0
-ball_initial_position_y = 80
+ball_initial_position_y = -220
 
 playing = True
+is_rolling = True
 bricks = []
 colors = {"red": 7, "orange": 5, "green": 3, "yellow": 1}
 
@@ -125,6 +126,8 @@ def paddle_left():   # movimentação da raquete para o lado esquerdo
     else:
         x = -350
     paddle.setx(x)
+    if is_rolling:
+        ball.setx(ball.xcor() - 20)
 
 
 def paddle_right():  # movimentação da raquete para o lado direito
@@ -134,6 +137,17 @@ def paddle_right():  # movimentação da raquete para o lado direito
     else:
         x = 340
     paddle.setx(x)
+    if is_rolling:
+        ball.setx(ball.xcor() + 20)
+
+def throw_ball():
+    global is_rolling
+    if is_rolling:
+        px = paddle.xcor()
+        bx = ball.xcor()
+        degrees = px - bx + 90
+        calculate_angle(ball, degrees)
+        is_rolling = False
 
 screen = create_screen("Breakout", 800, 600)
 root = screen.getcanvas().winfo_toplevel()
@@ -156,12 +170,13 @@ else:
     ball.dx = -base_speed
 
 # o jogo inicia com a bola indo pra baixo
-ball.dy = -base_speed
+ball.dy = 0
 
 # movimentação da raquete
 screen.listen()
 screen.onkeypress(paddle_right, "Right")
 screen.onkeypress(paddle_left, "Left")
+screen.onkeypress(throw_ball, "space")
 
 
 # mensagem de game over
@@ -198,8 +213,13 @@ while playing:
         continue
 
     # movimentação da bola
-    ball.setx(ball.xcor() + ball.dx)
-    ball.sety(ball.ycor() + ball.dy)
+    if is_rolling:
+        ball.setx(ball.xcor() + ball.dx) 
+        if ball.xcor() + 10 >= paddle.xcor() + 60 or ball.xcor() - 10 <= paddle.xcor() - 60:
+            ball.dx *= -1
+    else:
+        ball.setx(ball.xcor() + ball.dx)
+        ball.sety(ball.ycor() + ball.dy)
 
     collision(paddle, ball)
 
@@ -224,10 +244,11 @@ while playing:
         ball.dy *= -1
 
     # reinício do jogo - resetar a bola
-    if ball.ycor() < -450:
+    if ball.ycor() < -300:
         lifes -= 1
         update_hud()
         ball.goto(paddle.xcor(), ball_initial_position_y)
+        is_rolling = True
         # um pouco de aleatoriedade no reinício do jogo
         if randint(0, 1) == 0:
             ball.dx *= -1
