@@ -131,6 +131,8 @@ def paddle_left():   # movimentação da raquete para o lado esquerdo
     else:
         x = -350
     paddle.setx(x)
+
+
     if is_rolling:
         ball.setx(ball.xcor() - 40)
 
@@ -207,8 +209,9 @@ def update_hud():
     score_hud.write("SCORE {}".format(score), align="center",
                     font=("Press Start 2P", 18, "normal"))
     lifes_hud.clear()
-    lifes_hud.write("<3" * lifes, align="center",
-                    font=("Press Start 2P", 18, "normal"))
+    # tamanho e formato do coração
+    lifes_hud.write("\u2764" * lifes, align="center",
+                    font=("Press Start 2P",24 , "normal"))
 
 
 update_hud()
