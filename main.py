@@ -1,5 +1,6 @@
 from math import cos, radians, sin
 from random import choice, randint
+from time import sleep
 import turtle
 import os
 
@@ -149,11 +150,28 @@ screen.listen()
 screen.onkeypress(paddle_right, "Right")
 screen.onkeypress(paddle_left, "Left")
 
+
+# tela de game over
+def game_over_screen():
+    hud = turtle.Turtle()
+    hud.speed(0)
+    hud.shape("square")
+    hud.color("white")
+    hud.penup()
+    hud.hideturtle()
+    hud.goto(0, 0)
+    hud.write("GAME OVER :(", align="center",
+              font=("Press Start 2P", 24, "normal"))
+
+
 while playing:
     # condição de parada do jogo
     if(lives == 0):
+        game_over_screen()
+        sleep(5)
         playing = False
         continue
+
     # movimentação da bola
     ball.setx(ball.xcor() + ball.dx)
     ball.sety(ball.ycor() + ball.dy)
