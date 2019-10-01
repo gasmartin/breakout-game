@@ -1,16 +1,18 @@
 from math import cos, radians, sin
-from random import choice, randint
+from random import randint
 from time import sleep
 import turtle
 import os
 
-base_speed = 0.7
+base_speed = 0.6
 ball_initial_position_x = 0
 ball_initial_position_y = 80
+
 playing = True
 bricks = []
 colors = {"red": 7, "orange": 5, "green": 3, "yellow": 1}
-lives = 3
+
+lifes = 3
 score = 0
 
 
@@ -65,6 +67,16 @@ def create_line_of_bricks(initial_y, color):
         bricks.append(create_brick(x, initial_y, 1, 4, color))
         x += 90
 
+def create_hud(x, y):
+    hud = turtle.Turtle()
+    hud.speed(0)
+    hud.shape("square")
+    hud.color("white")
+    hud.penup()
+    hud.hideturtle()
+    hud.goto(x, y)
+    return hud
+
 
 def calculate_angle(ball, degrees):
     dx = base_speed * cos(radians(degrees))
@@ -96,12 +108,14 @@ def collision_brick(brick, ball):
                 os.system("aplay bounce.wav&")
                 ball.dy *= -1
                 score += colors[brick.color()[0]]
+                update_hud()
                 brick.hideturtle()
         if by < bry + 10 and by > bry - 10:
             if (bx >= brx - 40 and bx < brx) or (bx <= brx + 40 and bx > brx):
                 ball.dx *= -1
                 ball.dy *= -1
                 score += colors[brick.color()[0]]
+                update_hud()
                 brick.hideturtle()
 
 def paddle_left():   # movimentação da raquete para o lado esquerdo
@@ -162,32 +176,21 @@ def game_over_screen():
     hud.write("GAME OVER :(", align="center",
               font=("Press Start 2P", 24, "normal"))
 
-# display da pontuação
-score_hud = turtle.Turtle()
-score_hud.speed(0)
-score_hud.shape("square")
-score_hud.color("white")
-score_hud.penup()
-score_hud.hideturtle()
-score_hud.goto(-350, 250)
-score_hud.write("SCORE ", align="center",
-            font=("Press Start 2P", 12, "normal"))
+score_hud = create_hud(-300, 250)
+lifes_hud = create_hud(300, 250)
 
-
-# display das vidas
-life = turtle.Turtle()
-life.speed(0)
-life.shape("square")
-life.color("white")
-life.penup()
-life.hideturtle()
-life.goto(350, 250)
-life.write("LIVES ", align="center",
-           font=("Press Start 2P", 12, "normal"))
+def update_hud():
+    score_hud.clear()
+    score_hud.write("SCORE {}".format(score), align="center",
+            font=("Press Start 2P", 18, "normal"))
+    lifes_hud.clear()
+    lifes_hud.write("<3" * lifes, align="center",
+            font=("Press Start 2P", 18, "normal"))
 
 while playing:
     # condição de parada do jogo
-    if(lives == 0):
+    if lifes == 0:
+        update_hud()
         game_over_screen()
         sleep(5)
         playing = False
@@ -221,7 +224,8 @@ while playing:
 
     # reinício do jogo - resetar a bola
     if ball.ycor() < -450:
-        lives -= 1
+        lifes -= 1
+        update_hud()
         ball.goto(paddle.xcor(), ball_initial_position_y)
         # um pouco de aleatoriedade no reinício do jogo
         if randint(0, 1) == 0:
