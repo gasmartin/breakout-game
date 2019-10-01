@@ -9,8 +9,9 @@ ball_initial_position_x = 0
 ball_initial_position_y = 80
 playing = True
 bricks = []
-colors = ["red", "orange", "green", "yellow"]
+colors = {"red": 7, "orange": 5, "green": 3, "yellow": 1}
 lives = 3
+score = 0
 
 
 def create_screen(title, width, height):
@@ -67,7 +68,7 @@ def create_line_of_bricks(initial_y, color):
 
 
 # Lógica do ângulo
-# px - bx + 90
+# brx - bx + 90
 def calculate_angle(ball, degrees):
     dx = base_speed * cos(radians(degrees))
     dy = base_speed * sin(radians(degrees))
@@ -76,17 +77,34 @@ def calculate_angle(ball, degrees):
 
 
 def collision(paddle, ball):
-    px, py = paddle.xcor(), paddle.ycor()
+    brx, bry = paddle.xcor(), paddle.ycor()
     bx, by = ball.xcor(), ball.ycor()
-    if bx > px - 60 and bx < px + 60 and by - 10 <= py + 8 and by - 10 >= py:
+    if bx > brx - 60 and bx < brx + 60 and by - 10 <= bry + 8 and by - 10 >= bry:
         os.system("aplay bounce.wav&")
-        degrees = px - bx + 90
+        degrees = brx - bx + 90
         calculate_angle(ball, degrees)
-    if by < py + 8 and by > py - 8:
-        if (bx >= px - 60 and bx < px) or (bx <= px + 60 and bx > px):
+    if by < bry + 8 and by > bry - 8:
+        if (bx >= brx - 60 and bx < brx) or (bx <= brx + 60 and bx > brx):
+            os.system("aplay bounce.wav&")
             ball.dx *= -1
             ball.dy *= -1
 
+def collision_brick(brick, ball):
+    global score
+    brx, bry = brick.xcor(), brick.ycor()
+    bx, by = ball.xcor(), ball.ycor()
+    if brick.isvisible():
+        if bx > brx - 60 and bx < brx + 60 and by - 10 <= bry + 8 and by - 10 >= bry:
+            os.system("aplay bounce.wav&")
+            ball.dy *= -1
+            score += colors[brick.color()[0]]
+            brick.hideturtle()
+        if by < bry + 8 and by > bry - 8:
+            if (bx >= brx - 60 and bx < brx) or (bx <= brx + 60 and bx > brx):
+                ball.dx *= -1
+                ball.dy *= -1
+                score += colors[brick.color()[0]]
+                brick.hideturtle()
 
 def paddle_left():   # movimentação da raquete para o lado esquerdo
     x = paddle.xcor()
@@ -111,12 +129,11 @@ root.protocol("WM_DELETE_WINDOW", close_screen)
 
 # desenhando os blocos
 y = 200
-for color in colors:
+for color in colors.keys():
     create_line_of_bricks(y, color)
     y -= 30
 
 paddle = create_paddle(0, -250, 0.8, 6, "white")
-
 ball = create_ball(ball_initial_position_x, ball_initial_position_y, "white")
 
 # definindo a velocidade inicial da bola e
@@ -148,14 +165,14 @@ def game_over_screen():
               font=("Press Start 2P", 24, "normal"))
 
 # display da pontuação
-score = turtle.Turtle()
-score.speed(0)
-score.shape("square")
-score.color("white")
-score.penup()
-score.hideturtle()
-score.goto(-350, 250)
-score.write("SCORE ", align="center",
+score_hud = turtle.Turtle()
+score_hud.speed(0)
+score_hud.shape("square")
+score_hud.color("white")
+score_hud.penup()
+score_hud.hideturtle()
+score_hud.goto(-350, 250)
+score_hud.write("SCORE ", align="center",
             font=("Press Start 2P", 12, "normal"))
 
 
@@ -183,6 +200,9 @@ while playing:
     ball.sety(ball.ycor() + ball.dy)
 
     collision(paddle, ball)
+
+    for brick in bricks:
+        collision_brick(brick, ball)
 
     # colisão com parede da direita
     if ball.xcor() > 385:
