@@ -41,7 +41,6 @@ def create_paddle(x, y, width, length, color):
 
 def create_ball(x, y, color):
     ball = turtle.Turtle()
-    # ball.base_speed(0)
     ball.shape("square")
     ball.color(color)
     ball.penup()
@@ -67,8 +66,6 @@ def create_line_of_bricks(initial_y, color):
         x += 90
 
 
-# Lógica do ângulo
-# brx - bx + 90
 def calculate_angle(ball, degrees):
     dx = base_speed * cos(radians(degrees))
     dy = base_speed * sin(radians(degrees))
@@ -94,13 +91,14 @@ def collision_brick(brick, ball):
     brx, bry = brick.xcor(), brick.ycor()
     bx, by = ball.xcor(), ball.ycor()
     if brick.isvisible():
-        if bx > brx - 60 and bx < brx + 60 and by - 10 <= bry + 8 and by - 10 >= bry:
-            os.system("aplay bounce.wav&")
-            ball.dy *= -1
-            score += colors[brick.color()[0]]
-            brick.hideturtle()
-        if by < bry + 8 and by > bry - 8:
-            if (bx >= brx - 60 and bx < brx) or (bx <= brx + 60 and bx > brx):
+        if bx > brx - 40 and bx < brx + 40:
+            if (by - 10 <= bry + 10 and by > bry) or (by + 10 >= bry - 10 and by < bry):
+                os.system("aplay bounce.wav&")
+                ball.dy *= -1
+                score += colors[brick.color()[0]]
+                brick.hideturtle()
+        if by < bry + 10 and by > bry - 10:
+            if (bx >= brx - 40 and bx < brx) or (bx <= brx + 40 and bx > brx):
                 ball.dx *= -1
                 ball.dy *= -1
                 score += colors[brick.color()[0]]
