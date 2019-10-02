@@ -102,8 +102,9 @@ screen.onkeypress(throw_ball, "space")
 screen.onkeypress(pause_game, "p")
 
 
-score_hud = objects.create_hud(-300, 250)
+score_hud = objects.create_hud(-250, 250)
 lifes_hud = objects.create_hud(300, 250)
+lifes_hud.color("red")
 
 
 def update_hud():
