@@ -1,0 +1,64 @@
+import turtle
+
+
+def create_screen(title, width, height):
+    screen = turtle.Screen()
+    screen.title(title)
+    screen.bgcolor("black")
+    screen.setup(width=width, height=height)
+    screen.tracer(0)
+    return screen
+
+
+def create_paddle(x, y, width, length, color):
+    paddle = turtle.Turtle()
+    paddle.speed(0)
+    paddle.shape("square")
+    paddle.color(color)
+    paddle.shapesize(stretch_wid=width, stretch_len=length)
+    paddle.penup()
+    paddle.goto(x, y)
+    return paddle
+
+
+def create_ball(x, y, color):
+    ball = turtle.Turtle()
+    ball.shape("square")
+    ball.color(color)
+    ball.penup()
+    ball.goto(x, y)
+    return ball
+
+
+def create_brick(x, y, width, length, color):
+    brick = turtle.Turtle()
+    brick.speed(0)
+    brick.shape("square")
+    brick.shapesize(stretch_wid=width, stretch_len=length)
+    brick.color(color)
+    brick.penup()
+    brick.goto(x, y)
+    return brick
+
+
+def create_hud(x, y):
+    hud = turtle.Turtle()
+    hud.speed(0)
+    hud.shape("square")
+    hud.color("white")
+    hud.penup()
+    hud.hideturtle()
+    hud.goto(x, y)
+    return hud
+
+
+def end_game_screen(string):
+    hud = turtle.Turtle()
+    hud.speed(0)
+    hud.shape("square")
+    hud.color("white")
+    hud.penup()
+    hud.hideturtle()
+    hud.goto(0, 0)
+    hud.write(string, align="center",
+              font=("Press Start 2P", 24, "normal"))
