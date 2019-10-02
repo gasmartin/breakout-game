@@ -17,6 +17,7 @@ lifes = 3
 score = 0
 inv_bricks = 0
 
+
 def create_screen(title, width, height):
     screen = turtle.Screen()
     screen.title(title)
@@ -137,7 +138,6 @@ def paddle_left():   # movimentação da raquete para o lado esquerdo
         x = -350
     paddle.setx(x)
 
-
     if is_rolling:
         ball.setx(ball.xcor() - 40)
 
@@ -151,6 +151,7 @@ def paddle_right():  # movimentação da raquete para o lado direito
     paddle.setx(x)
     if is_rolling:
         ball.setx(ball.xcor() + 40)
+
 
 def throw_ball():
     global is_rolling
@@ -216,7 +217,7 @@ def update_hud():
     lifes_hud.clear()
     # tamanho e formato do coração
     lifes_hud.write("\u2764" * lifes, align="center",
-                    font=("Press Start 2P",24 , "normal"))
+                    font=("Press Start 2P", 24, "normal"))
 
 
 update_hud()
@@ -240,8 +241,11 @@ while playing:
 
     # movimentação da bola
     if is_rolling:
-        ball.setx(ball.xcor() + ball.dx) 
-        if ball.xcor() + 10 >= paddle.xcor() + 60 or ball.xcor() - 10 <= paddle.xcor() - 60:
+        ball.setx(ball.xcor() + ball.dx)
+
+        if ball.xcor() + 10 >= paddle.xcor() + 60 or
+        ball.xcor() - 10 <= paddle.xcor() - 60:
+
             ball.dx *= -1
     else:
         ball.setx(ball.xcor() + ball.dx)
