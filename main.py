@@ -48,7 +48,7 @@ if randint(0, 1) == 0:
 else:
     ball.dx = -physics.base_speed
 
-# o jogo inicia com a bola indo pra baixo
+
 ball.dy = 0
 
 
@@ -116,7 +116,6 @@ def update_hud():
                     font=("Press Start 2P", 24, "normal"))
 
 
-# mensagem de game over
 update_hud()
 
 while playing:
