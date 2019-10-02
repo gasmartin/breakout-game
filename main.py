@@ -4,7 +4,8 @@ from time import sleep
 import turtle
 import os
 
-base_speed = 0.6
+from game_modules import physics, sounds, utils
+
 ball_initial_position_x = 0
 ball_initial_position_y = -220
 
@@ -12,11 +13,6 @@ playing = True
 is_rolling = True
 pause = False
 bricks = []
-colors = {"red": 7, "orange": 5, "green": 3, "yellow": 1}
-
-lifes = 3
-score = 0
-inv_bricks = 0
 
 
 def create_screen(title, width, height):
@@ -82,53 +78,28 @@ def create_hud(x, y):
     return hud
 
 
-def calculate_angle(ball, degrees):
-    dx = base_speed * cos(radians(degrees))
-    dy = base_speed * sin(radians(degrees))
-    ball.dx = round(dx, 2)
-    ball.dy = round(dy, 2)
+screen = create_screen("Breakout", 800, 600)
+root = screen.getcanvas().winfo_toplevel()
+root.protocol("WM_DELETE_WINDOW", close_screen)
 
+# desenhando os blocos
+y = 200
+for color in utils.colors.keys():
+    create_line_of_bricks(y, color)
+    y -= 30
 
-def collision(paddle, ball):
-    brx, bry = paddle.xcor(), paddle.ycor()
-    bx, by = ball.xcor(), ball.ycor()
-    if (bx > brx - 60 and bx < brx + 60 and
-            by - 10 <= bry + 8 and by - 10 >= bry):
-        os.system("aplay bounce.wav&")
-        degrees = brx - bx + 90
-        calculate_angle(ball, degrees)
-    if by < bry + 8 and by > bry - 8:
-        if (bx >= brx - 60 and bx < brx) or (bx <= brx + 60 and bx > brx):
-            os.system("aplay bounce.wav&")
-            ball.dx *= -1
-            ball.dy *= -1
+paddle = create_paddle(0, -250, 0.8, 6, "white")
+ball = create_ball(ball_initial_position_x, ball_initial_position_y, "white")
 
+# definindo a velocidade inicial da bola e
+# um pouco de aleatoriedade no início do jogo
+if randint(0, 1) == 0:
+    ball.dx = physics.base_speed
+else:
+    ball.dx = -physics.base_speed
 
-def collision_brick(brick, ball):
-    global score
-    global inv_bricks
-    brx, bry = brick.xcor(), brick.ycor()
-    bx, by = ball.xcor(), ball.ycor()
-    if brick.isvisible():
-        if bx > brx - 40 and bx < brx + 40:
-            if ((by - 10 <= bry + 10 and by > bry) or
-                    (by + 10 >= bry - 10 and by < bry)):
-                os.system("aplay bounce.wav&")
-                ball.dy *= -1
-                score += colors[brick.color()[0]]
-                update_hud()
-                brick.hideturtle()
-                inv_bricks += 1
-                return
-        if by < bry + 10 and by > bry - 10:
-            if (bx >= brx - 40 and bx < brx) or (bx <= brx + 40 and bx > brx):
-                ball.dx *= -1
-                ball.dy *= -1
-                score += colors[brick.color()[0]]
-                update_hud()
-                brick.hideturtle()
-                inv_bricks += 1
-                return
+# o jogo inicia com a bola indo pra baixo
+ball.dy = 0
 
 
 def paddle_left():   # movimentação da raquete para o lado esquerdo
@@ -164,36 +135,14 @@ def throw_ball():
         px = paddle.xcor()
         bx = ball.xcor()
         degrees = px - bx + 90
-        calculate_angle(ball, degrees)
+        physics.calculate_angle(ball, degrees)
         is_rolling = False
+
 
 def pause_game():
     global pause
     pause = not pause
 
-
-screen = create_screen("Breakout", 800, 600)
-root = screen.getcanvas().winfo_toplevel()
-root.protocol("WM_DELETE_WINDOW", close_screen)
-
-# desenhando os blocos
-y = 200
-for color in colors.keys():
-    create_line_of_bricks(y, color)
-    y -= 30
-
-paddle = create_paddle(0, -250, 0.8, 6, "white")
-ball = create_ball(ball_initial_position_x, ball_initial_position_y, "white")
-
-# definindo a velocidade inicial da bola e
-# um pouco de aleatoriedade no início do jogo
-if randint(0, 1) == 0:
-    ball.dx = base_speed
-else:
-    ball.dx = -base_speed
-
-# o jogo inicia com a bola indo pra baixo
-ball.dy = 0
 
 # movimentação da raquete
 screen.listen()
@@ -202,6 +151,19 @@ screen.onkeypress(paddle_left, "Left")
 screen.onkeypress(throw_ball, "space")
 screen.onkeypress(pause_game, "p")
 
+
+score_hud = create_hud(-300, 250)
+lifes_hud = create_hud(300, 250)
+
+
+def update_hud():
+    score_hud.clear()
+    score_hud.write("SCORE {}".format(utils.score), align="center",
+                    font=("Press Start 2P", 18, "normal"))
+    lifes_hud.clear()
+    # tamanho e formato do coração
+    lifes_hud.write("\u2764" * utils.lifes, align="center",
+                    font=("Press Start 2P", 24, "normal"))
 
 # mensagem de game over
 def end_game_screen(string):
@@ -216,35 +178,22 @@ def end_game_screen(string):
               font=("Press Start 2P", 24, "normal"))
 
 
-score_hud = create_hud(-300, 250)
-lifes_hud = create_hud(300, 250)
-
-
-def update_hud():
-    score_hud.clear()
-    score_hud.write("SCORE {}".format(score), align="center",
-                    font=("Press Start 2P", 18, "normal"))
-    lifes_hud.clear()
-    # tamanho e formato do coração
-    lifes_hud.write("\u2764" * lifes, align="center",
-                    font=("Press Start 2P", 24, "normal"))
-
-
 update_hud()
+
 while playing:
     # condição de parada do jogo
-    if lifes == 0:
+    if utils.lifes == 0:
         update_hud()
         end_game_screen("GAME OVER :(")
-        os.system("aplay derrota.wav")
+        sounds.play_defeat()
         sleep(4)
         playing = False
         continue
 
-    if inv_bricks == 28:
+    if utils.inv_bricks == 28:
         update_hud()
         end_game_screen("YOU WIN :)")
-        os.system("aplay vitoria.wav")
+        sounds.play_victory()
         sleep(4)
         playing = False
         continue
@@ -262,34 +211,36 @@ while playing:
             ball.setx(ball.xcor() + ball.dx)
             ball.sety(ball.ycor() + ball.dy)
 
-    collision(paddle, ball)
+    physics.collision(paddle, ball)
 
     for brick in bricks:
-        collision_brick(brick, ball)
+        if physics.collision_brick(brick, ball):
+            utils.inv_bricks += 1
+            update_hud()
 
     # colisão com parede da direita
     if ball.xcor() > 385:
-        os.system("aplay bounce.wav&")
+        sounds.play_bounce()
         ball.setx(385)
         ball.dx *= -1
 
     # colisão com parede da esquerda
     if ball.xcor() < -388:
-        os.system("aplay bounce.wav&")
+        sounds.play_bounce()
         ball.setx(-388)
         ball.dx *= -1
 
     # colisão com parede superior
     if ball.ycor() > 288:
-        os.system("aplay bounce.wav&")
+        sounds.play_bounce()
         ball.dy *= -1
 
     # reinício do jogo - resetar a bola
     if ball.ycor() < -300:
-        lifes -= 1
+        utils.lifes -= 1
         update_hud()
         ball.goto(paddle.xcor(), ball_initial_position_y)
-        ball.dx = base_speed
+        ball.dx = physics.base_speed
         ball.dy = 0
         is_rolling = True
         # um pouco de aleatoriedade no reinício do jogo
