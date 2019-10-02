@@ -243,9 +243,9 @@ while playing:
     if is_rolling:
         ball.setx(ball.xcor() + ball.dx)
 
-        if ball.xcor() + 10 >= paddle.xcor() + 60 or
-        ball.xcor() - 10 <= paddle.xcor() - 60:
-
+        if ball.xcor() + 10 >= paddle.xcor() + 60 or \
+           ball.xcor() - 10 <= paddle.xcor() - 60:
+           
             ball.dx *= -1
     else:
         ball.setx(ball.xcor() + ball.dx)
