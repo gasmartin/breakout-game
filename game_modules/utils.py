@@ -9,6 +9,7 @@ colors = {
     "yellow": 1
 }
 
+
 def update_score(color):
     global score
     score += colors[color]

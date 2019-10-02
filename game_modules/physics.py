@@ -4,6 +4,7 @@ from game_modules import sounds, utils
 
 base_speed = 0.6
 
+
 def calculate_angle(ball, degrees):
     dx = base_speed * cos(radians(degrees))
     dy = base_speed * sin(radians(degrees))

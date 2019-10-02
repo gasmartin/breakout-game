@@ -4,7 +4,7 @@ from time import sleep
 import turtle
 import os
 
-from game_modules import physics, sounds, utils
+from game_modules import physics, sounds, utils, objects
 
 ball_initial_position_x = 0
 ball_initial_position_y = -220
@@ -15,70 +15,19 @@ pause = False
 bricks = []
 
 
-def create_screen(title, width, height):
-    screen = turtle.Screen()
-    screen.title(title)
-    screen.bgcolor("black")
-    screen.setup(width=width, height=height)
-    screen.tracer(0)
-    return screen
-
-
 def close_screen():
     global playing
     playing = not playing
 
 
-def create_paddle(x, y, width, length, color):
-    paddle = turtle.Turtle()
-    paddle.speed(0)
-    paddle.shape("square")
-    paddle.color(color)
-    paddle.shapesize(stretch_wid=width, stretch_len=length)
-    paddle.penup()
-    paddle.goto(x, y)
-    return paddle
-
-
-def create_ball(x, y, color):
-    ball = turtle.Turtle()
-    ball.shape("square")
-    ball.color(color)
-    ball.penup()
-    ball.goto(x, y)
-    return ball
-
-
-def create_brick(x, y, width, length, color):
-    brick = turtle.Turtle()
-    brick.speed(0)
-    brick.shape("square")
-    brick.shapesize(stretch_wid=width, stretch_len=length)
-    brick.color(color)
-    brick.penup()
-    brick.goto(x, y)
-    return brick
-
-
 def create_line_of_bricks(initial_y, color):
     x = -270
     while x <= 270:
-        bricks.append(create_brick(x, initial_y, 1, 4, color))
+        bricks.append(objects.create_brick(x, initial_y, 1, 4, color))
         x += 90
 
 
-def create_hud(x, y):
-    hud = turtle.Turtle()
-    hud.speed(0)
-    hud.shape("square")
-    hud.color("white")
-    hud.penup()
-    hud.hideturtle()
-    hud.goto(x, y)
-    return hud
-
-
-screen = create_screen("Breakout", 800, 600)
+screen = objects.create_screen("Breakout", 800, 600)
 root = screen.getcanvas().winfo_toplevel()
 root.protocol("WM_DELETE_WINDOW", close_screen)
 
@@ -88,8 +37,9 @@ for color in utils.colors.keys():
     create_line_of_bricks(y, color)
     y -= 30
 
-paddle = create_paddle(0, -250, 0.8, 6, "white")
-ball = create_ball(ball_initial_position_x, ball_initial_position_y, "white")
+paddle = objects.create_paddle(0, -250, 0.8, 6, "white")
+ball = objects.create_ball(ball_initial_position_x,
+                           ball_initial_position_y, "white")
 
 # definindo a velocidade inicial da bola e
 # um pouco de aleatoriedade no início do jogo
@@ -98,7 +48,7 @@ if randint(0, 1) == 0:
 else:
     ball.dx = -physics.base_speed
 
-# o jogo inicia com a bola indo pra baixo
+
 ball.dy = 0
 
 
@@ -152,8 +102,8 @@ screen.onkeypress(throw_ball, "space")
 screen.onkeypress(pause_game, "p")
 
 
-score_hud = create_hud(-300, 250)
-lifes_hud = create_hud(300, 250)
+score_hud = objects.create_hud(-300, 250)
+lifes_hud = objects.create_hud(300, 250)
 
 
 def update_hud():
@@ -165,18 +115,6 @@ def update_hud():
     lifes_hud.write("\u2764" * utils.lifes, align="center",
                     font=("Press Start 2P", 24, "normal"))
 
-# mensagem de game over
-def end_game_screen(string):
-    hud = turtle.Turtle()
-    hud.speed(0)
-    hud.shape("square")
-    hud.color("white")
-    hud.penup()
-    hud.hideturtle()
-    hud.goto(0, 0)
-    hud.write(string, align="center",
-              font=("Press Start 2P", 24, "normal"))
-
 
 update_hud()
 
@@ -184,7 +122,7 @@ while playing:
     # condição de parada do jogo
     if utils.lifes == 0:
         update_hud()
-        end_game_screen("GAME OVER :(")
+        objects.end_game_screen("GAME OVER :(")
         sounds.play_defeat()
         sleep(4)
         playing = False
@@ -192,7 +130,7 @@ while playing:
 
     if utils.inv_bricks == 28:
         update_hud()
-        end_game_screen("YOU WIN :)")
+        objects.end_game_screen("YOU WIN :)")
         sounds.play_victory()
         sleep(4)
         playing = False
@@ -204,7 +142,7 @@ while playing:
             ball.setx(ball.xcor() + ball.dx)
 
             if ball.xcor() + 10 >= paddle.xcor() + 60 or \
-            ball.xcor() - 10 <= paddle.xcor() - 60:
+                    ball.xcor() - 10 <= paddle.xcor() - 60:
 
                 ball.dx *= -1
         else:
