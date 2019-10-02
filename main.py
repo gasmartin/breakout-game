@@ -225,14 +225,16 @@ while playing:
     if lifes == 0:
         update_hud()
         end_game_screen("GAME OVER :(")
-        sleep(5)
+        os.system("aplay derrota.wav")
+        sleep(4)
         playing = False
         continue
 
     if inv_bricks == 28:
         update_hud()
         end_game_screen("YOU WIN :)")
-        sleep(5)
+        os.system("aplay vitoria.wav")
+        sleep(4)
         playing = False
         continue
 
