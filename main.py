@@ -10,6 +10,7 @@ ball_initial_position_y = -220
 
 playing = True
 is_rolling = True
+pause = False
 bricks = []
 colors = {"red": 7, "orange": 5, "green": 3, "yellow": 1}
 
@@ -131,26 +132,30 @@ def collision_brick(brick, ball):
 
 
 def paddle_left():   # movimentação da raquete para o lado esquerdo
-    x = paddle.xcor()
-    if x > -350:
-        x += -40
-    else:
-        x = -350
-    paddle.setx(x)
+    global pause
+    if not pause:
+        x = paddle.xcor()
+        if x > -350:
+            x += -40
+        else:
+            x = -350
+        paddle.setx(x)
 
-    if is_rolling:
-        ball.setx(ball.xcor() - 40)
+        if is_rolling:
+            ball.setx(ball.xcor() - 40)
 
 
 def paddle_right():  # movimentação da raquete para o lado direito
-    x = paddle.xcor()
-    if x < 340:
-        x += 40
-    else:
-        x = 340
-    paddle.setx(x)
-    if is_rolling:
-        ball.setx(ball.xcor() + 40)
+    global pause
+    if not pause:
+        x = paddle.xcor()
+        if x < 340:
+            x += 40
+        else:
+            x = 340
+        paddle.setx(x)
+        if is_rolling:
+            ball.setx(ball.xcor() + 40)
 
 
 def throw_ball():
@@ -161,6 +166,10 @@ def throw_ball():
         degrees = px - bx + 90
         calculate_angle(ball, degrees)
         is_rolling = False
+
+def pause_game():
+    global pause
+    pause = not pause
 
 
 screen = create_screen("Breakout", 800, 600)
@@ -191,6 +200,7 @@ screen.listen()
 screen.onkeypress(paddle_right, "Right")
 screen.onkeypress(paddle_left, "Left")
 screen.onkeypress(throw_ball, "space")
+screen.onkeypress(pause_game, "p")
 
 
 # mensagem de game over
@@ -240,16 +250,17 @@ while playing:
         continue
 
     # movimentação da bola
-    if is_rolling:
-        ball.setx(ball.xcor() + ball.dx)
+    if not pause:
+        if is_rolling:
+            ball.setx(ball.xcor() + ball.dx)
 
-        if ball.xcor() + 10 >= paddle.xcor() + 60 or \
-           ball.xcor() - 10 <= paddle.xcor() - 60:
-           
-            ball.dx *= -1
-    else:
-        ball.setx(ball.xcor() + ball.dx)
-        ball.sety(ball.ycor() + ball.dy)
+            if ball.xcor() + 10 >= paddle.xcor() + 60 or \
+            ball.xcor() - 10 <= paddle.xcor() - 60:
+
+                ball.dx *= -1
+        else:
+            ball.setx(ball.xcor() + ball.dx)
+            ball.sety(ball.ycor() + ball.dy)
 
     collision(paddle, ball)
 
