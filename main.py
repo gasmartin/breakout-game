@@ -1,8 +1,6 @@
-from math import cos, radians, sin
 from random import randint
 from time import sleep
 import turtle
-import os
 
 from game_modules import physics, sounds, utils, objects
 
@@ -12,19 +10,11 @@ ball_initial_position_y = -220
 playing = True
 is_rolling = True
 pause = False
-bricks = []
 
 
 def close_screen():
     global playing
     playing = not playing
-
-
-def create_line_of_bricks(initial_y, color):
-    x = -270
-    while x <= 270:
-        bricks.append(objects.create_brick(x, initial_y, 1, 4, color))
-        x += 90
 
 
 screen = objects.create_screen("Breakout", 800, 600)
@@ -34,7 +24,7 @@ root.protocol("WM_DELETE_WINDOW", close_screen)
 # desenhando os blocos
 y = 200
 for color in utils.colors.keys():
-    create_line_of_bricks(y, color)
+    objects.create_line_of_bricks(y, color)
     y -= 30
 
 paddle = objects.create_paddle(0, -250, 0.8, 6, "white")
@@ -152,7 +142,7 @@ while playing:
 
     physics.collision(paddle, ball)
 
-    for brick in bricks:
+    for brick in objects.bricks:
         if physics.collision_brick(brick, ball):
             utils.inv_bricks += 1
             update_hud()
