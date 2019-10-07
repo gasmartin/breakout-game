@@ -17,11 +17,17 @@ def collision(paddle, ball):
     bx, by = ball.xcor(), ball.ycor()
     if (bx > brx - 60 and bx < brx + 60 and
             by - 10 <= bry + 8 and by - 10 >= bry):
+        ball.sety(bry + 8 + 10)
         sounds.play_bounce()
         degrees = brx - bx + 90
         calculate_angle(ball, degrees)
     if by < bry + 8 and by > bry - 8:
         if (bx >= brx - 60 and bx < brx) or (bx <= brx + 60 and bx > brx):
+            ball.sety(bry + 8 + 10)
+            if (bx > brx):
+                ball.setx(brx + 60)
+            else:
+                ball.setx(brx - 60)
             sounds.play_bounce()
             ball.dx *= -1
             ball.dy *= -1

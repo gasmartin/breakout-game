@@ -25,9 +25,11 @@ exit_hud.write("exit", align="center", font=("", 18, "normal"))
 dx = 40
 dy = 40
 
+
 # para finalizar o jogo
 def exit_(x, y):
-    if(exit_position_x - dx <= x <= exit_position_x + dx and exit_position_y - dy <= y <= exit_position_y + dy):
+    if(exit_position_x - dx <= x <= exit_position_x + dx and
+       exit_position_y - dy <= y <= exit_position_y + dy):
         screen.bye()
 
 screen.onscreenclick(exit_)
