@@ -23,13 +23,19 @@ def collision(paddle, ball):
         calculate_angle(ball, degrees)
     if by < bry + 8 and by > bry - 8:
         if (bx >= brx - 60 and bx < brx) or (bx <= brx + 60 and bx > brx):
+            # impedir a bola de entrar na barra
             ball.sety(bry + 8 + 10)
             if (bx > brx):
                 ball.setx(brx + 60)
             else:
                 ball.setx(brx - 60)
             sounds.play_bounce()
-            ball.dx *= -1
+            ball.dx = round(base_speed * cos(radians(30)), 2)
+            # condicoes para a bola mudar de direcao em x
+            if bx > brx and ball.dx <= 0:
+                ball.dx *= -1
+            elif bx < brx and ball.dx >= 0:
+                ball.dx *= -1
             ball.dy *= -1
 
 
