@@ -1,7 +1,5 @@
 from math import cos, radians, sin
-
 from game_modules import sounds, utils
-
 base_speed = 0.6
 
 
