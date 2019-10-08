@@ -28,7 +28,7 @@ for color in utils.colors.keys():
     objects.create_line_of_bricks(y, color)
     y -= 30
 
-paddle = objects.create_paddle(0, -250, 0.8, 6, "white")
+paddle = objects.create_paddle(0, -250, 0.8, 6, "blue")
 ball = objects.create_ball(ball_initial_position_x,
                            ball_initial_position_y, "white")
 
