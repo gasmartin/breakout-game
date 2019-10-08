@@ -23,6 +23,11 @@ def create_paddle(x, y, width, length, color):
     return paddle
 
 
+def shrink_paddle(paddle, width, new_length):
+    paddle.shapesize(stretch_wid=width, stretch_len=new_length)
+    paddle.goto(paddle.xcor(), paddle.ycor())
+
+
 def create_ball(x, y, color):
     ball = turtle.Turtle()
     ball.shape("square")

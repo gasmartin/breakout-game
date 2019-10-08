@@ -10,6 +10,7 @@ ball_initial_position_y = -220
 playing = True
 is_rolling = True
 pause = False
+shrink = False
 
 
 def close_screen():
@@ -44,29 +45,45 @@ ball.dy = 0
 
 def paddle_left():   # movimentação da raquete para o lado esquerdo
     global pause
+    global shrink
     if not pause:
         x = paddle.xcor()
-        if x > -350:
-            x += -40
+        if shrink is False:
+            if x > -350:
+                x += -30
+            else:
+                x = -350
+            paddle.setx(x)
         else:
-            x = -350
-        paddle.setx(x)
+            if x > -355:
+                x += -30
+            else:
+                x = -373
+            paddle.setx(x)
 
         if is_rolling:
-            ball.setx(ball.xcor() - 40)
+            ball.setx(ball.xcor() - 30)
 
 
 def paddle_right():  # movimentação da raquete para o lado direito
     global pause
+    global shrink
     if not pause:
         x = paddle.xcor()
-        if x < 340:
-            x += 40
+        if shrink is False:
+            if x < 340:
+                x += 30
+            else:
+                x = 340
+            paddle.setx(x)
         else:
-            x = 340
-        paddle.setx(x)
+            if x < 345:
+                x += 30
+            else:
+                x = 367
+            paddle.setx(x)
         if is_rolling:
-            ball.setx(ball.xcor() + 40)
+            ball.setx(ball.xcor() + 30)
 
 
 def throw_ball():
@@ -109,7 +126,9 @@ def update_hud():
 
 update_hud()
 
+
 while playing:
+
     # condição de parada do jogo
     if utils.lifes == 0:
         update_hud()
@@ -139,8 +158,14 @@ while playing:
         else:
             ball.setx(ball.xcor() + ball.dx)
             ball.sety(ball.ycor() + ball.dy)
-
-    physics.collision(paddle, ball)
+    if utils.score < 100:
+        physics.collision(paddle, ball)
+    if utils.score >= 100:
+        # garante que o paddle diminui apenas uma vez
+        if shrink is False:
+            objects.shrink_paddle(paddle, 0.8, 3)
+            shrink = True
+        physics.collision_shrink_paddle(paddle, ball)
 
     for brick in objects.bricks:
         if physics.collision_brick(brick, ball):

@@ -39,6 +39,33 @@ def collision(paddle, ball):
             ball.dy *= -1
 
 
+def collision_shrink_paddle(paddle, ball):
+    brx, bry = paddle.xcor(), paddle.ycor()
+    bx, by = ball.xcor(), ball.ycor()
+    if (bx > brx - 35 and bx < brx + 35 and
+            by - 10 <= bry + 8 and by - 10 >= bry):
+        ball.sety(bry + 8 + 10)
+        sounds.play_bounce()
+        degrees = brx - bx + 90
+        calculate_angle(ball, degrees)
+    if by < bry + 8 and by > bry - 8:
+        if (bx >= brx - 35 and bx < brx) or (bx <= brx + 35 and bx > brx):
+            # impedir a bola de entrar na barra
+            ball.sety(bry + 8 + 10)
+            if (bx > brx):
+                ball.setx(brx + 30)
+            else:
+                ball.setx(brx - 30)
+            sounds.play_bounce()
+            ball.dx = round(base_speed * cos(radians(30)), 2)
+            # condicoes para a bola mudar de direcao em x
+            if bx > brx and ball.dx <= 0:
+                ball.dx *= -1
+            elif bx < brx and ball.dx >= 0:
+                ball.dx *= -1
+            ball.dy *= -1
+
+
 def collision_brick(brick, ball):
     brx, bry = brick.xcor(), brick.ycor()
     bx, by = ball.xcor(), ball.ycor()
