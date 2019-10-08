@@ -23,7 +23,9 @@ play_hud.write("play", align="center", font=("", 18, "normal"))
 scores_hud = objects.create_hud(0, 30)
 scores_hud.write("scores", align="center", font=("", 18, "normal"))
 
-credits_hud = objects.create_hud(0, -10)
+credits_position_x = 0
+credits_position_y = -10
+credits_hud = objects.create_hud(credits_position_x, credits_position_y)
 credits_hud.write("credits", align="center", font=("", 18, "normal"))
 
 exit_position_x = 0
@@ -33,9 +35,7 @@ exit_hud.write("exit", align="center", font=("", 18, "normal"))
 
 dx = 40
 dy = 15
-paddle = objects.create_paddle(0, -250, 0.8, 6, "blue")
-ball = objects.create_ball(ball_initial_position_x,
-                           ball_initial_position_y, "white")
+
 
 current_screen = "menu"
 
@@ -45,6 +45,8 @@ def exit_(x, y):
     if(exit_position_x - dx <= x <= exit_position_x + dx and exit_position_y - dy <= y <= exit_position_y + dy):
         screen.bye()
 
+# para iniciar o jogo
+
 
 def play(x, y):
     if(play_position_x - dx <= x <= play_position_x + dx and play_position_y - dy <= y <= play_position_y + dy):
@@ -53,6 +55,17 @@ def play(x, y):
         screen.clear()
         current_screen = "game"
 
+# para acessar os creditos do jogo
+
+
+def credits(x, y):
+    if(credits_position_x - dx <= x <= credits_position_x + dx and credits_position_y - dy <= y <= credits_position_y + dy):
+        global current_screen
+        screen.clear()
+        current_screen = "credits"
+
+
+# END MENU
 
 def paddle_left():   # movimentação da raquete para o lado esquerdo
     global pause
@@ -196,9 +209,8 @@ while playing:
         pause = not pause
 
         ball.dx *= -1
-        else:
-            ball.setx(ball.xcor() + ball.dx)
-            ball.sety(ball.ycor() + ball.dy)
+        ball.setx(ball.xcor() + ball.dx)
+        ball.sety(ball.ycor() + ball.dy)
     if utils.score < 100:
         physics.collision(paddle, ball)
     if utils.score >= 100:
