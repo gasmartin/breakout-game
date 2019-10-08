@@ -3,10 +3,14 @@ from time import sleep
 
 from game_modules import physics, sounds, utils, objects
 
-### BEGIN MENU
+# BEGIN MENU
 
 # criar tela
 screen = objects.create_screen("Breakout", 800, 600)
+playing = True
+is_rolling = True
+pause = False
+shrink = False
 
 title_hud = objects.create_hud(0, 250)
 title_hud.write("BREAKOUT", align="center", font=("", 24, "normal"))
@@ -29,6 +33,9 @@ exit_hud.write("exit", align="center", font=("", 18, "normal"))
 
 dx = 40
 dy = 15
+paddle = objects.create_paddle(0, -250, 0.8, 6, "blue")
+ball = objects.create_ball(ball_initial_position_x,
+                           ball_initial_position_y, "white")
 
 current_screen = "menu"
 
@@ -47,6 +54,49 @@ def play(x, y):
         current_screen = "game"
 
 
+def paddle_left():   # movimentação da raquete para o lado esquerdo
+    global pause
+    global shrink
+    if not pause:
+        x = paddle.xcor()
+        if shrink is False:
+            if x > -350:
+                x += -30
+            else:
+                x = -350
+            paddle.setx(x)
+        else:
+            if x > -355:
+                x += -30
+            else:
+                x = -373
+            paddle.setx(x)
+
+        if is_rolling:
+            ball.setx(ball.xcor() - 30)
+
+
+def paddle_right():  # movimentação da raquete para o lado direito
+    global pause
+    global shrink
+    if not pause:
+        x = paddle.xcor()
+        if shrink is False:
+            if x < 340:
+                x += 30
+            else:
+                x = 340
+            paddle.setx(x)
+        else:
+            if x < 345:
+                x += 30
+            else:
+                x = 367
+            paddle.setx(x)
+        if is_rolling:
+            ball.setx(ball.xcor() + 30)
+
+
 def on_screen_click(x, y):
     exit_(x, y)
     play(x, y)
@@ -57,7 +107,7 @@ screen.onscreenclick(on_screen_click)
 while current_screen == "menu":
     screen.update()
 
-### END MENU
+# END MENU
 
 
 if current_screen != "menu":
@@ -68,11 +118,9 @@ if current_screen != "menu":
     is_rolling = True
     pause = False
 
-
     def close_screen():
         global playing
         playing = not playing
-
 
     screen = objects.create_screen("Breakout", 800, 600)
     root = screen.getcanvas().winfo_toplevel()
@@ -86,7 +134,7 @@ if current_screen != "menu":
 
     paddle = objects.create_paddle(0, -250, 0.8, 6, "white")
     ball = objects.create_ball(ball_initial_position_x,
-                            ball_initial_position_y, "white")
+                               ball_initial_position_y, "white")
 
     # definindo a velocidade inicial da bola e
     # um pouco de aleatoriedade no início do jogo
@@ -95,9 +143,7 @@ if current_screen != "menu":
     else:
         ball.dx = -physics.base_speed
 
-
     ball.dy = 0
-
 
     def paddle_left():   # movimentação da raquete para o lado esquerdo
         global pause
@@ -113,6 +159,17 @@ if current_screen != "menu":
                 ball.setx(ball.xcor() - 40)
 
 
+while playing:
+
+    # condição de parada do jogo
+    if utils.lifes == 0:
+        update_hud()
+        objects.end_game_screen("GAME OVER :(")
+        sounds.play_defeat()
+        sleep(4)
+        playing = False
+        continue
+
     def paddle_right():  # movimentação da raquete para o lado direito
         global pause
         if not pause:
@@ -125,7 +182,6 @@ if current_screen != "menu":
             if is_rolling:
                 ball.setx(ball.xcor() + 40)
 
-
     def throw_ball():
         global is_rolling
         if is_rolling:
@@ -135,11 +191,22 @@ if current_screen != "menu":
             physics.calculate_angle(ball, degrees)
             is_rolling = False
 
-
     def pause_game():
         global pause
         pause = not pause
 
+        ball.dx *= -1
+        else:
+            ball.setx(ball.xcor() + ball.dx)
+            ball.sety(ball.ycor() + ball.dy)
+    if utils.score < 100:
+        physics.collision(paddle, ball)
+    if utils.score >= 100:
+        # garante que o paddle diminui apenas uma vez
+        if shrink is False:
+            objects.shrink_paddle(paddle, 0.8, 3)
+            shrink = True
+        physics.collision_shrink_paddle(paddle, ball)
 
     # movimentação da raquete
     screen.listen()
@@ -148,11 +215,9 @@ if current_screen != "menu":
     screen.onkeypress(throw_ball, "space")
     screen.onkeypress(pause_game, "p")
 
-
     score_hud = objects.create_hud(-250, 250)
     lifes_hud = objects.create_hud(300, 250)
     lifes_hud.color("red")
-
 
     def update_hud():
         score_hud.clear()
@@ -162,7 +227,6 @@ if current_screen != "menu":
         # tamanho e formato do coração
         lifes_hud.write("\u2764" * utils.lifes, align="center",
                         font=("Press Start 2P", 24, "normal"))
-
 
     update_hud()
 
