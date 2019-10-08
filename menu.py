@@ -1,8 +1,6 @@
 # criar tela
-from game_modules import objects
 import turtle
-from time import sleep
-from game_modules import objects, sounds
+from game_modules import objects
 screen = objects.create_screen("Breakout", 800, 600)
 
 title_hud = objects.create_hud(0, 250)
@@ -25,10 +23,13 @@ exit_hud.write("exit", align="center", font=("", 18, "normal"))
 dx = 40
 dy = 40
 
+
 # para finalizar o jogo
 def exit_(x, y):
-    if(exit_position_x - dx <= x <= exit_position_x + dx and exit_position_y - dy <= y <= exit_position_y + dy):
+    if exit_position_x - dx <= x <= exit_position_x + dx and \
+       exit_position_y - dy <= y <= exit_position_y + dy:
         screen.bye()
+
 
 screen.onscreenclick(exit_)
 
