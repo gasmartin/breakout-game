@@ -13,6 +13,8 @@ shrink = False
 def close_screen():
     global playing
     playing = not playing
+
+
 screen = objects.create_screen("Breakout", 800, 600)
 root = screen.getcanvas().winfo_toplevel()
 root.protocol("WM_DELETE_WINDOW", close_screen)
@@ -90,6 +92,8 @@ def throw_ball():
 def pause_game():
     global pause
     pause = not pause
+
+
 # movimentação da raquete
 screen.listen()
 screen.onkeypress(paddle_right, "Right")
@@ -109,6 +113,8 @@ def update_hud():
     # tamanho e formato do coração
     lifes_hud.write("\u2764" * utils.lifes, align="center",
                     font=("Press Start 2P", 24, "normal"))
+
+
 update_hud()
 while playing:
     # condição de parada do jogo
