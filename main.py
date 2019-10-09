@@ -122,14 +122,14 @@ while playing:
         update_hud()
         objects.end_game_screen("GAME OVER :(")
         sounds.play_defeat()
-        sleep(4)
+        sleep(2)
         playing = False
         continue
     if utils.inv_bricks == 28:
         update_hud()
         objects.end_game_screen("YOU WIN :)")
         sounds.play_victory()
-        sleep(4)
+        sleep(2)
         playing = False
         continue
     # movimentação da bola
