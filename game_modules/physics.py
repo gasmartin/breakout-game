@@ -14,20 +14,22 @@ def collision(paddle, ball):
     bx, by = ball.xcor(), ball.ycor()
 
     paddle_sizes = paddle.shapesize()
-    paddle_half_height, paddle_half_width = paddle_sizes[0] * 10, paddle_sizes[1] * 10
+    paddle_half_height = paddle_sizes[0] * 10
+    paddle_half_width = paddle_sizes[1] * 10
 
     ball_radius = ball.shapesize()[0] * 10
 
-    if bx >= px - paddle_half_width and bx <= px + paddle_half_width and \
-            by - ball_radius <= py + paddle_half_height and by - 10 >= py - paddle_half_height:
+    if (bx >= px - paddle_half_width and bx <= px + paddle_half_width and
+       by - ball_radius <= py + paddle_half_height and by - 10 >= py -
+       paddle_half_height):
         degrees = px - bx + 90
         calculate_angle(ball, degrees)
         ball.goto(bx + ball.dx, by + ball.dy)
         return True
 
     if by <= py + paddle_half_height and by >= py - paddle_half_height and \
-            ((bx + ball_radius >= px - paddle_half_width and bx < px) or \
-            (bx - ball_radius <= px + paddle_half_width and bx > px)):
+            ((bx + ball_radius >= px - paddle_half_width and bx < px) or
+             (bx - ball_radius <= px + paddle_half_width and bx > px)):
         ball.dx *= -1
         ball.dy *= -1
         ball.goto(bx + ball.dx, by + ball.dy)
