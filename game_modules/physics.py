@@ -48,10 +48,6 @@ def collision_brick(brick, ball):
             if ((by - 10 <= bry + 10 and by > bry) or
                     (by + 10 >= bry - 10 and by < bry)):
                 ball.dy *= -1
-                if by > bry:
-                    ball.goto(bx + ball.dx, bry + 20)
-                else:
-                    ball.goto(bx + ball.dx, bry - 20)
                 return True
         if by < bry + 10 and by > bry - 10:
             if (bx >= brx - 40 and bx < brx) or (bx <= brx + 40 and bx > brx):
