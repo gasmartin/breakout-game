@@ -24,7 +24,7 @@ def collision(paddle, ball):
        paddle_half_height):
         degrees = px - bx + 90
         calculate_angle(ball, degrees)
-        ball.goto(bx + ball.dx, by + ball.dy)
+        ball.goto(bx + ball.dx, py + paddle_half_height + ball_radius)
         return True
 
     if by <= py + paddle_half_height and by >= py - paddle_half_height and \
@@ -32,7 +32,10 @@ def collision(paddle, ball):
              (bx - ball_radius <= px + paddle_half_width and bx > px)):
         ball.dx *= -1
         ball.dy *= -1
-        ball.goto(bx + ball.dx, by + ball.dy)
+        if bx < px:
+            ball.goto(px - paddle_half_width - ball_radius, by + ball.dy)
+        else:
+            ball.goto(px + paddle_half_width + ball_radius, by + ball.dy)
         return True
     return False
 
@@ -45,12 +48,14 @@ def collision_brick(brick, ball):
             if ((by - 10 <= bry + 10 and by > bry) or
                     (by + 10 >= bry - 10 and by < bry)):
                 ball.dy *= -1
-                ball.goto(bx + ball.dx, by + ball.dy)
+                if by > bry:
+                    ball.goto(bx + ball.dx, bry + 20)
+                else:
+                    ball.goto(bx + ball.dx, bry - 20)
                 return True
         if by < bry + 10 and by > bry - 10:
             if (bx >= brx - 40 and bx < brx) or (bx <= brx + 40 and bx > brx):
                 ball.dx *= -1
                 ball.dy *= -1
-                ball.goto(bx + ball.dx, by + ball.dy)
                 return True
     return False
