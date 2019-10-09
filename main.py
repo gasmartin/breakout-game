@@ -136,23 +136,26 @@ while playing:
     if not pause:
         if is_rolling:
             ball.setx(ball.xcor() + ball.dx)
-            if ball.xcor() + 10 >= paddle.xcor() + 60 or \
-                    ball.xcor() - 10 <= paddle.xcor() - 60:
+            paddle_half_width = paddle.shapesize()[1] * 10
+            if ball.xcor() + 10 >= paddle.xcor() + paddle_half_width or \
+                    ball.xcor() - 10 <= paddle.xcor() - paddle_half_width:
                 ball.dx *= -1
         else:
             ball.setx(ball.xcor() + ball.dx)
             ball.sety(ball.ycor() + ball.dy)
-    if utils.score < 100:
-        physics.collision(paddle, ball)
+    if physics.collision(paddle, ball):
+        sounds.play_bounce()
     if utils.score >= 100:
         # garante que o paddle diminui apenas uma vez
         if shrink is False:
             objects.shrink_paddle(paddle, 0.8, 3)
             shrink = True
-        physics.collision_shrink_paddle(paddle, ball)
     for brick in objects.bricks:
         if physics.collision_brick(brick, ball):
+            sounds.play_bounce()
+            brick.hideturtle()
             utils.inv_bricks += 1
+            utils.update_score(brick.color()[0])
             update_hud()
     # colisão com parede da direita
     if ball.xcor() > 385:

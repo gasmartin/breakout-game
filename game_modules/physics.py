@@ -1,6 +1,5 @@
 from math import cos, radians, sin
-from game_modules import sounds, utils
-base_speed = 0.6
+base_speed = 0.4
 
 
 def calculate_angle(ball, degrees):
@@ -11,57 +10,29 @@ def calculate_angle(ball, degrees):
 
 
 def collision(paddle, ball):
-    brx, bry = paddle.xcor(), paddle.ycor()
+    px, py = paddle.xcor(), paddle.ycor()
     bx, by = ball.xcor(), ball.ycor()
-    if (bx > brx - 60 and bx < brx + 60 and
-            by - 10 <= bry + 8 and by - 10 >= bry):
-        ball.sety(bry + 8 + 10)
-        sounds.play_bounce()
-        degrees = brx - bx + 90
-        calculate_angle(ball, degrees)
-    if by < bry + 8 and by > bry - 8:
-        if (bx >= brx - 60 and bx < brx) or (bx <= brx + 60 and bx > brx):
-            # impedir a bola de entrar na barra
-            ball.sety(bry + 8 + 10)
-            if (bx > brx):
-                ball.setx(brx + 60)
-            else:
-                ball.setx(brx - 60)
-            sounds.play_bounce()
-            ball.dx = round(base_speed * cos(radians(30)), 2)
-            # condicoes para a bola mudar de direcao em x
-            if bx > brx and ball.dx <= 0:
-                ball.dx *= -1
-            elif bx < brx and ball.dx >= 0:
-                ball.dx *= -1
-            ball.dy *= -1
 
+    paddle_sizes = paddle.shapesize()
+    paddle_half_height, paddle_half_width = paddle_sizes[0] * 10, paddle_sizes[1] * 10
 
-def collision_shrink_paddle(paddle, ball):
-    brx, bry = paddle.xcor(), paddle.ycor()
-    bx, by = ball.xcor(), ball.ycor()
-    if (bx > brx - 35 and bx < brx + 35 and
-            by - 10 <= bry + 8 and by - 10 >= bry):
-        ball.sety(bry + 8 + 10)
-        sounds.play_bounce()
-        degrees = brx - bx + 90
+    ball_radius = ball.shapesize()[0] * 10
+
+    if bx >= px - paddle_half_width and bx <= px + paddle_half_width and \
+            by - ball_radius <= py + paddle_half_height and by - 10 >= py - paddle_half_height:
+        degrees = px - bx + 90
         calculate_angle(ball, degrees)
-    if by < bry + 8 and by > bry - 8:
-        if (bx >= brx - 35 and bx < brx) or (bx <= brx + 35 and bx > brx):
-            # impedir a bola de entrar na barra
-            ball.sety(bry + 8 + 10)
-            if (bx > brx):
-                ball.setx(brx + 30)
-            else:
-                ball.setx(brx - 30)
-            sounds.play_bounce()
-            ball.dx = round(base_speed * cos(radians(30)), 2)
-            # condicoes para a bola mudar de direcao em x
-            if bx > brx and ball.dx <= 0:
-                ball.dx *= -1
-            elif bx < brx and ball.dx >= 0:
-                ball.dx *= -1
-            ball.dy *= -1
+        ball.goto(bx + ball.dx, by + ball.dy)
+        return True
+
+    if by <= py + paddle_half_height and by >= py - paddle_half_height and \
+            ((bx + ball_radius >= px - paddle_half_width and bx < px) or \
+            (bx - ball_radius <= px + paddle_half_width and bx > px)):
+        ball.dx *= -1
+        ball.dy *= -1
+        ball.goto(bx + ball.dx, by + ball.dy)
+        return True
+    return False
 
 
 def collision_brick(brick, ball):
@@ -71,17 +42,13 @@ def collision_brick(brick, ball):
         if bx > brx - 40 and bx < brx + 40:
             if ((by - 10 <= bry + 10 and by > bry) or
                     (by + 10 >= bry - 10 and by < bry)):
-                sounds.play_bounce()
                 ball.dy *= -1
-                utils.update_score(brick.color()[0])
-                brick.hideturtle()
+                ball.goto(bx + ball.dx, by + ball.dy)
                 return True
         if by < bry + 10 and by > bry - 10:
             if (bx >= brx - 40 and bx < brx) or (bx <= brx + 40 and bx > brx):
                 ball.dx *= -1
                 ball.dy *= -1
-                sounds.play_bounce()
-                utils.update_score(brick.color()[0])
-                brick.hideturtle()
+                ball.goto(bx + ball.dx, by + ball.dy)
                 return True
     return False
